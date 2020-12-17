@@ -5,7 +5,7 @@
 
 import scrapy
 
-class StockscrapyItem(scrapy.Item):
+class Stock_scrapyItem(scrapy.Item):
     # define the fields for your item here like:
     Name = scrapy.Field()
     Date = scrapy.Field()

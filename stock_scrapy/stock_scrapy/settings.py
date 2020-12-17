@@ -1,4 +1,4 @@
-# Scrapy settings for StockScrapy project
+# Scrapy settings for stock_scrapy project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -20,13 +20,13 @@ DB = os.getenv("db")
 CHARSET = os.getenv("charset")
 
 
-BOT_NAME = 'StockScrapy'
+BOT_NAME = 'stock_scrapy'
 
-SPIDER_MODULES = ['StockScrapy.spiders']
-NEWSPIDER_MODULE = 'StockScrapy.spiders'
+SPIDER_MODULES = ['stock_scrapy.spiders']
+NEWSPIDER_MODULE = 'stock_scrapy.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'StockScrapy (+http://www.yourdomain.com)'
+#USER_AGENT = 'Sstock_scrapy (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -57,13 +57,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'StockScrapy.middlewares.StockscrapySpiderMiddleware': 543,
+#    'stock_scrapy.middlewares.stock_scrapySpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'StockScrapy.middlewares.StockscrapyDownloaderMiddleware': 543,
+#    'stock_scrapy.middlewares.stock_scrapyDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -75,8 +75,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'StockScrapy.pipelines.StockscrapyPipeline': 300,
-    'StockScrapy.pipelines.StockToMysql': 400
+   'stock_scrapy.pipelines.Stock_scrapyPipeline': 300,
+    'stock_scrapy.pipelines.StockToMysql': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

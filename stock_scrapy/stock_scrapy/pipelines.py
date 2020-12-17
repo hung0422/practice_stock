@@ -11,7 +11,7 @@ import time
 import pymysql
 
 # 轉換時間格式
-class StockscrapyPipeline:
+class Stock_scrapyPipeline:
     def process_item(self, item, spider):
         Date_change = time.strptime(item['Date'], "%b %d, %Y")
         item['Date'] = time.strftime("%Y-%m-%d", Date_change)
