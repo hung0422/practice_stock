@@ -138,7 +138,6 @@ plt.show()
 ------
 交叉驗證 & 調參
 from sklearn.model_selection import cross_val_score, GridSearchCV
-from sklearn.model_selection import cross_val_score, GridSearchCV
 
 # 交叉驗證
 scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
@@ -151,8 +150,8 @@ param_grid = {
 }
 grid = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=5)
 grid.fit(X_train, y_train)
-grid.best_params_
-grid.best_score_
+print('最佳參數: ', grid.best_params_)
+print('最佳交叉驗證準確率: ', grid.best_score_)
 
 ------ or
 # 利用StratifiedKFold做交叉驗證，相較於KFold，StratifiedKFold會照比例每個data set中抽取資料作驗證
@@ -170,4 +169,5 @@ gs_model.fit(x_train,y_train)
 import joblib
 
 joblib.dump(model, 'model.pkl') # 將模型儲存為 .pkl 檔案。
+
 loaded_model = joblib.load('model.pkl') # 載入儲存的模型。
