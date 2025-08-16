@@ -1,0 +1,103 @@
+import pandas as pd
+import numpy as np
+
+# 基礎環境與資料處理
+df = pd.read_csv("data.csv")         # 讀取CSV
+df = pd.read_excel("data.xlsx")      # 讀取Excel
+df = pd.read_sql("SELECT * FROM t", conn)  # 從資料庫讀取
+df.to_csv("out.csv", index=False)    # 寫出CSV
+df.to_excel('output.xlsx')   # 將 DataFrame 寫入 Excel 檔案。
+
+# 基本查詢
+df.head()           # 前5筆
+df.info()           # 欄位型態、缺失值概況
+df.describe()       # 敘述統計
+df['col'].unique()  # 唯一值
+df['col'].value_counts()  # 計數
+df[['col1', 'col2']]  # 選擇多個欄位。
+df.isnull().sum()  # 計算各欄位中的缺失值數量。
+df.loc[row_label, col_label]  # 根據標籤進行選擇，常與布林值篩選搭配使用，例如：df.loc[df['age'] > 30]。
+df.iloc[row_index, col_index]  # 根據索引位置進行選擇。
+
+# 欄位操作
+df.rename(columns={'old':'new'}, inplace=True)  # 欄位改名
+df['new_col'] = df['a'] + df['b']              # 新增欄位
+df.drop(columns=['col1','col2'], inplace=True) # 刪除欄位
+
+# 缺失值處理
+df.dropna()                        # 刪除缺失列
+df.fillna(0)                       # 缺失補0
+df['col'].fillna(df['col'].mean()) # 用平均數補
+
+# 篩選與排序
+df[df['col'] > 100]                # 篩選
+df[(df['a'] > 50) & (df['b'] < 20)]
+df.sort_values(by='col', ascending=False)
+
+# 分組與聚合 (GroupBy)
+df.groupby('dept')['salary'].mean()
+df.groupby(['dept','gender']).agg({'salary':'mean','age':'max'})
+df.groupby(['name']).agg(
+    mean_salary=('salary', 'mean'),
+    max_age=('age', 'max'))
+
+# 資料合併與比對
+pd.merge(df1, df2, on='id', how='inner')   # 合併
+pd.concat([df1, df2], axis=0)              # 縱向合併
+pd.concat([df1, df2], axis=1)              # 橫向合併
+# 範例：找 A 表有但 B 表沒有的值
+dfA[~dfA['id'].isin(dfB['id'])]
+
+# 日期與時間處理
+df['date'] = pd.to_datetime(df['date'])
+df['year'] = df['date'].dt.year
+df['month'] = df['date'].dt.month
+df['age'] = (pd.Timestamp.today() - df['birthday']).dt.days // 365
+
+# SQL 與 Python 結合
+import sqlite3
+conn = sqlite3.connect("bank.db")
+
+query = """
+SELECT d.dept_name, AVG(e.salary) AS avg_salary
+FROM employees e
+JOIN departments d ON e.d_id = d.d_id
+GROUP BY d.dept_name;
+"""
+df = pd.read_sql(query, conn) # 用 Pandas 直接讀取資料庫表格
+------
+from sqlalchemy import create_engine
+engine = create_engine('postgresql://user:password@host:port/database')
+pd.read_sql_query('SELECT * FROM table', conn)  # 直接從資料庫讀取資料到 DataFrame。
+
+# 資料清理與轉換
+df['col'] = df['col'].str.strip()          # 去除前後空白
+df['col'] = df['col'].str.upper()          # 轉大寫
+df['amount'] = df['amount'].astype(float)  # 型態轉換
+
+# Pivot / Crosstab (交叉表)
+pd.pivot_table(df, index='dept', columns='gender', values='salary', aggfunc='mean')
+pd.crosstab(df['dept'], df['gender'])
+
+# Apply / Lambda
+df['salary_after_tax'] = df['salary'].apply(lambda x: x*0.8)
+
+# 窗口函數 (類 SQL over())
+df['rank'] = df['salary'].rank(ascending=False)
+df['rolling_mean'] = df['amount'].rolling(3).mean()  # 滑動平均
+
+# 檔案與目錄操作 (os, pathlib)
+os.path.join('folder', 'file.csv') # 安全地組合路徑，避免不同作業系統的路徑分隔符號問題。
+
+os.listdir('path') # 列出指定目錄下的所有檔案和子目錄。
+
+os.makedirs('new_folder', exist_ok=True) # 建立資料夾，exist_ok=True 避免資料夾已存在時報錯。
+
+# pathlib 模組 (更現代且物件導向的方式)
+
+from pathlib import Path
+
+p = Path('folder/sub_folder/file.txt')
+p.exists()：檢查路徑是否存在。
+p.parent：取得父目錄。
+p.iterdir()：迭代列出目錄下的所有檔案。
