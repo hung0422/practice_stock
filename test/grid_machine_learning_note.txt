@@ -1,0 +1,53 @@
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report, roc_auc_score
+import pandas as pd
+import numpy as np
+
+# 假設您已經有了 X 和 y
+# X = df.drop('target', axis=1)
+# y = df['target']
+
+# --- Step 1: 切分數據為訓練集和測試集 ---
+# 測試集 (test_size=0.2) 將被保留，GridSearchCV不會使用到它
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# --- Step 2: 在訓練集上使用 GridSearchCV 尋找最佳參數 ---
+# 定義模型
+model = LogisticRegression()
+
+# 定義要測試的超參數網格
+param_grid = {
+    'C': [0.1, 1, 10],
+    'solver': ['liblinear', 'lbfgs']
+}
+
+# 建立 GridSearchCV 物件，使用 5 折交叉驗證
+# 注意: GridSearchCV 只會使用 X_train 和 y_train
+grid_search = GridSearchCV(model, param_grid, cv=5)
+
+# 訓練模型並執行網格搜尋
+grid_search.fit(X_train, y_train)
+
+print("--- GridSearchCV 結果 ---")
+print(f"最佳超參數: {grid_search.best_params_}")
+print(f"最佳模型分數 (交叉驗證): {grid_search.best_score_:.4f}")
+
+# --- Step 3: 取得最佳模型並對獨立的測試集進行預測 ---
+best_model = grid_search.best_estimator_
+
+y_pred = best_model.predict(X_test)
+y_pred_proba = best_model.predict_proba(X_test)[:, 1]
+
+# --- Step 4: 使用 y_test 和 y_pred 進行最終評估 ---
+print("\n--- 獨立測試集評估報告 ---")
+print("--- 混淆矩陣 ---")
+print(confusion_matrix(y_test, y_pred))
+
+print("\n--- 分類報告 ---")
+print(classification_report(y_test, y_pred))
+
+print("\n--- ROC AUC Score ---")
+print(f"ROC AUC Score: {roc_auc_score(y_test, y_pred_proba):.4f}")
